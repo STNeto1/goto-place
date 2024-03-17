@@ -3,33 +3,53 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"log"
+	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+    "github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/stneto1/goto-place/pkg"
+	"github.com/stneto1/goto-place/ui"
 )
 
 var hexColorPattern = regexp.MustCompile(`^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$`)
 
 func main() {
+	dist, err := fs.Sub(ui.Dist, "dist")
+	if err != nil {
+		log.Fatalln("failed to get fs", err)
+	}
 	appState := pkg.NewApp(false)
 	defer appState.CloseConnection()
 
 	app := fiber.New(fiber.Config{})
-	// e.Use(middleware.Logger())
-	// e.Use(middleware.Recover())
+    app.Use(logger.New())
+    app.Use(recover.New())
 	app.Use(func(c *fiber.Ctx) error {
 		c.Locals("appState", appState)
-
 		return c.Next()
 	})
 
-	app.Static("/public", "./public")
 	app.Get("/ws", websocket.New(WsHandler, websocket.Config{}))
+	app.Use("/", filesystem.New(filesystem.Config{
+		Root: http.FS(dist),
+	}))
+
+	// Access file "image.png" under `static/` directory via URL: `http://<server>/static/image.png`.
+	// Without `PathPrefix`, you have to access it via URL:
+	// `http://<server>/static/static/image.png`.
+	app.Use("/static", filesystem.New(filesystem.Config{
+		Root:       http.FS(ui.Dist),
+		PathPrefix: "static",
+		Browse:     true,
+	}))
 
 	go appState.RunHub()
 

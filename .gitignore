@@ -21,3 +21,5 @@
 go.work
 
 *.sqlite
+node_modules
+dist

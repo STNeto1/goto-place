@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -22,11 +23,14 @@ import (
 var hexColorPattern = regexp.MustCompile(`^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$`)
 
 func main() {
+	// FLY.IO injected value
+	primaryRegion := os.Getenv("PRIMARY_REGION")
+
 	dist, err := fs.Sub(ui.Dist, "dist")
 	if err != nil {
 		log.Fatalln("failed to get fs", err)
 	}
-	appState := pkg.NewApp(false)
+	appState := pkg.NewApp(primaryRegion != "")
 	defer appState.CloseConnection()
 
 	app := fiber.New(fiber.Config{})

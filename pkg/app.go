@@ -4,12 +4,21 @@ import (
 	"database/sql"
 	"log"
 
+	_ "github.com/superfly/litefs-go"
 	_ "github.com/tursodatabase/go-libsql"
 )
 
 func NewApp(isProduction bool) *App {
 	if isProduction {
-		log.Panicln("Not implemented")
+		conn, err := sql.Open("sqlite3", "/litefs/my.db")
+		if err != nil {
+			log.Panicln("Failed to open connection", err)
+		}
+		if err := conn.Ping(); err != nil {
+			log.Panicln("Failed to ping", err)
+		}
+
+		return &App{conn}
 	}
 
 	conn, err := sql.Open("libsql", "file:db.sqlite")

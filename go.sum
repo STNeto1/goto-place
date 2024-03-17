@@ -35,6 +35,8 @@ github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee h1:8Iv5m6xEo1NR1Avp
 github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee/go.mod h1:qwtSXrKuJh/zsFQ12yEE89xfCrGKK63Rr7ctU/uCo4g=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
+github.com/superfly/litefs-go v0.0.0-20230914211438-bcdba8bfde62 h1:wxqaLwaolUZSBhAh36t//MczvsMZeMRVMnwFinneFwc=
+github.com/superfly/litefs-go v0.0.0-20230914211438-bcdba8bfde62/go.mod h1:h+GUx1V2s0C5nY73ZN82760eWEJrpMaiDweF31VmJKk=
 github.com/tursodatabase/go-libsql v0.0.0-20240315132559-d8f1df912132 h1:wXqpy6alSak0B1JesxOthpDC3lp6JbpwSyXFOmy2f3E=
 github.com/tursodatabase/go-libsql v0.0.0-20240315132559-d8f1df912132/go.mod h1:sb520Yr+GHBsfL43FQgQ+rLFfuJkItgRWlTgbIQHVxA=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

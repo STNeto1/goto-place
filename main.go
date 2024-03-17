@@ -14,7 +14,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-    "github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/stneto1/goto-place/pkg"
 	"github.com/stneto1/goto-place/ui"
 )
@@ -30,8 +30,8 @@ func main() {
 	defer appState.CloseConnection()
 
 	app := fiber.New(fiber.Config{})
-    app.Use(logger.New())
-    app.Use(recover.New())
+	app.Use(logger.New())
+	app.Use(recover.New())
 	app.Use(func(c *fiber.Ctx) error {
 		c.Locals("appState", appState)
 		return c.Next()
@@ -139,7 +139,7 @@ func WsHandler(ws *websocket.Conn) {
 					continue
 				}
 
-				pkg.Broadcast <- []byte(fmt.Sprintf("%d;%d;%s", x, y, hexColor))
+				pkg.Broadcast <- []byte(fmt.Sprintf("\"%d;%d;%s\"", x, y, hexColor))
 
 				continue
 			}

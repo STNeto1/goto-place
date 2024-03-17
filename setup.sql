@@ -9,19 +9,22 @@ CREATE TABLE points (
 );
 
 
+-- x = number of rows
+-- y = number of columns
+
 WITH RECURSIVE x_series AS (
   SELECT 0 AS x
   UNION ALL
   SELECT x + 1
   FROM x_series
-  WHERE x < 9
+  WHERE x < 40
 ),
 y_series AS (
   SELECT 0 AS y
   UNION ALL
   SELECT y + 1
   FROM y_series
-  WHERE y < 9
+  WHERE y < 80
 )
 INSERT INTO points (x, y, color)
 SELECT x, y, colors.color

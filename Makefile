@@ -1,2 +1,3 @@
 seed:
-	sqlite3 db.sqlite < seed.sql
+	rm db.sqlite
+	sqlite3 db.sqlite < setup.sql

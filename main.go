@@ -16,11 +16,17 @@ import (
 var hexColorPattern = regexp.MustCompile(`^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$`)
 
 func main() {
-	appState := pkg.NewApp()
+	appState := pkg.NewApp(false)
+	defer appState.CloseConnection()
 
 	app := fiber.New(fiber.Config{})
 	// e.Use(middleware.Logger())
 	// e.Use(middleware.Recover())
+	app.Use(func(c *fiber.Ctx) error {
+		c.Locals("appState", appState)
+
+		return c.Next()
+	})
 
 	app.Static("/public", "./public")
 	app.Get("/ws", websocket.New(WsHandler, websocket.Config{}))
@@ -35,8 +41,26 @@ func WsHandler(ws *websocket.Conn) {
 		pkg.Unregister <- ws
 		ws.Close()
 	}()
-
 	pkg.Register <- ws
+
+	appState, ok := ws.Locals("appState").(*pkg.App)
+	if !ok {
+		return
+	}
+
+	rows, err := appState.GetPoints()
+	if err != nil {
+		log.Println("failed to get existing points", err)
+		return
+	}
+
+	jsonData, err := json.Marshal(rows)
+	if err != nil {
+		log.Println("failed to serialize", err)
+		return
+	}
+
+	pkg.Notify <- pkg.NotifyClientData{Conn: ws, Message: jsonData}
 
 	for {
 		msgType, msg, err := ws.ReadMessage()
@@ -90,12 +114,18 @@ func WsHandler(ws *websocket.Conn) {
 					continue
 				}
 
+				if err := appState.UpdatePoint(x, y, hexColor); err != nil {
+					log.Println("failed to update", err)
+					continue
+				}
+
 				pkg.Broadcast <- []byte(fmt.Sprintf("%d;%d;%s", x, y, hexColor))
 
 				continue
 			}
 
 			log.Println("payload for weird event", payload.Event, "with contents:", payload.Contents)
+			continue
 		}
 
 		log.Println("got message of the type", msgType, "with the content:", string(msg))

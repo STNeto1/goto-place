@@ -62,7 +62,14 @@ function App() {
 	};
 
 	return (
-		<>
+		<section
+			style={{
+				"margin-left": "auto",
+				"margin-right": "auto",
+				width: "100%",
+				"max-width": "fit-content",
+			}}
+		>
 			<div style={{ display: "flex", "padding-bottom": "2rem" }}>
 				<For each={colors}>
 					{(color) => (
@@ -78,7 +85,13 @@ function App() {
 				</For>
 			</div>
 
-			<div style={{ display: "flex", "flex-direction": "column" }}>
+			<div
+				style={{
+					display: "flex",
+					"flex-direction": "column",
+					border: "1px solid #444",
+				}}
+			>
 				<For each={rows()}>
 					{(col) => (
 						<div style={{ display: "flex" }}>
@@ -100,7 +113,7 @@ function App() {
 					)}
 				</For>
 			</div>
-		</>
+		</section>
 	);
 }
 
